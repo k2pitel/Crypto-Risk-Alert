@@ -1,0 +1,111 @@
+blockchain:
+  etherscan_api_key: "your_etherscan_api_key_here"
+  bscscan_api_key: "your_bscscan_api_key_here"
+  polygonscan_api_key: "your_polygonscan_api_key_here"
+  infura_project_id: "your_infura_project_id"
+  alchemy_api_key: "your_alchemy_api_key"
+  
+  networks:
+    - name: ethereum
+      enabled: true
+      rpc_url: "https://mainnet.infura.io/v3/{infura_project_id}"
+      explorer_api: "https://api.etherscan.io/api"
+      
+    - name: bsc
+      enabled: true
+      rpc_url: "https://bsc-dataseed.binance.org/"
+      explorer_api: "https://api.bscscan.com/api"
+      
+    - name: polygon
+      enabled: true
+      rpc_url: "https://polygon-rpc.com"
+      explorer_api: "https://api.polygonscan.com/api"
+
+  whale_thresholds:
+    ethereum: 100  # ETH
+    bsc: 1000      # BNB
+    polygon: 50000 # MATIC
+    usd_value: 1000000  # USD equivalent
+
+sentiment:
+  twitter:
+    api_key: "your_twitter_api_key"
+    api_secret: "your_twitter_api_secret"
+    access_token: "your_access_token"
+    access_token_secret: "your_access_token_secret"
+    bearer_token: "your_bearer_token"
+    
+  reddit:
+    client_id: "your_reddit_client_id"
+    client_secret: "your_reddit_client_secret"
+    user_agent: "CryptoRiskAlert/1.0"
+    
+  scraping:
+    enabled: true
+    platforms:
+      - twitter
+      - reddit
+      - telegram_channels
+    update_interval: 300  # seconds
+
+alerts:
+  telegram:
+    bot_token: "your_telegram_bot_token"
+    enabled: true
+    
+  discord:
+    bot_token: "your_discord_bot_token"
+    enabled: true
+    
+  email:
+    smtp_server: "smtp.gmail.com"
+    smtp_port: 587
+    username: "your_email@gmail.com"
+    password: "your_email_password"
+    enabled: false
+
+risk_scoring:
+  weights:
+    whale_transfer: 0.3
+    contract_analysis: 0.4
+    sentiment: 0.3
+    
+  thresholds:
+    critical: 8.0
+    high: 6.0
+    medium: 4.0
+    low: 2.0
+    
+  contract_risk_indicators:
+    - hidden_owner
+    - unlimited_mint
+    - no_liquidity_lock
+    - suspicious_transfer_patterns
+    - honeypot_indicators
+    
+database:
+  type: "postgresql"
+  host: "localhost"
+  port: 5432
+  name: "crypto_risk_alert"
+  user: "postgres"
+  password: "your_db_password"
+  
+redis:
+  host: "localhost"
+  port: 6379
+  db: 0
+  password: null
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  reload: false
+  log_level: "info"
+
+monitoring:
+  enable_metrics: true
+  prometheus_port: 9090
+  log_file: "logs/crypto_risk_alert.log"
+  log_level: "INFO"
