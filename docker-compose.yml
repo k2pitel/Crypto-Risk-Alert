@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://crypto_user:crypto_pass@db:5432/crypto_risk
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    command: python src/api/app.py
+
+  main:
+    build: .
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    command: python src/main.py
+
+  telegram-bot:
+    build: .
+    depends_on:
+      - api
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    command: python src/bots/telegram_bot.py
+
+  discord-bot:
+    build: .
+    depends_on:
+      - api
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    command: python src/bots/discord_bot.py
+
+  db:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_DB=crypto_risk
+      - POSTGRES_USER=crypto_user
+      - POSTGRES_PASSWORD=crypto_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
